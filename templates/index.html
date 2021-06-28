@@ -1,0 +1,17 @@
+<h1>Hello World</h1>
+<P>this my firt page</P>	
+<P>My name is {{first_name | capitalize}}</P>
+
+<h1>Framework Python :</h1>
+<p>
+	{% for framework in pframework %}
+		{% if framework ==  32 %}
+			{{framework+100}} <br>
+		{% else %}
+			{{framework}} <br>
+		{% endif %}
+	
+	{% endfor %}
+</p>
+
+{{pframework.0}}
