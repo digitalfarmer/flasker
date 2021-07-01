@@ -18,6 +18,7 @@
 					<td>No</td>
 					<td>Nama</td>
 					<td>Email</td>
+					<td>Favorite Color</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -27,6 +28,7 @@
 					<td><a href="#">
 					{{our_user.name}}</a></td>
 					<td>{{our_user.email}}</td>
+					<td>{{our_user.favorite_color}}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
@@ -43,6 +45,8 @@
 					{{ form.name(class="form-control ") }}
 					{{ form.email.label(class="form-label") }}
 					{{ form.email(class="form-control") }}
+					{{ form.favorite_color.label(class="form-label") }}
+					{{ form.favorite_color(class="form-control") }}
 				</div>
 				{{ form.submit(class="btn btn-dark")   }}
 			</form>
@@ -55,6 +59,7 @@
 					<td>No</td>
 					<td>Nama</td>
 					<td>Email</td>
+					<td>Favorite Color</td>
 					<td>Action</td>
 				</tr>
 			</thead>
@@ -65,6 +70,7 @@
 					<td><a href="{{url_for('update_user', id=our_user.id)}}">
 						{{our_user.name}}</a></td>
 					<td>{{our_user.email}}</td>
+					<td>{{our_user.favorite_color}}</td>
 					<td><button class="btn btn-warning">Edite</button></td>
 				</tr>
 				{% endfor %}
