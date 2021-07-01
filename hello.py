@@ -1,5 +1,5 @@
 # author : lobotijo
-from flask import  Flask, render_template, flash
+from flask import  Flask, render_template, flash, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
@@ -10,7 +10,7 @@ from datetime import datetime
 # create flask instance
 app = Flask(__name__)
 
-#add sqlite database
+#add sqlite database													
 
 #app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///users.db'
 #MysqlDataBase
@@ -20,6 +20,7 @@ app.config['SECRET_KEY']="lobotijo"
 
 #initial database
 db= SQLAlchemy(app)
+
 
 #create model
 class Users(db.Model):
@@ -37,6 +38,24 @@ class UserForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired()])
 	email = StringField("Email", validators=[DataRequired()])
 	submit = SubmitField("Submit")
+
+# updateuser
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+def update_user(id):
+	form = UserForm()
+	name_to_update= Users.query.get_or_404(id)
+	if request.method == "POST":
+		name_to_update.name= request.form['name']		
+		name_to_update.email= request.form['email']
+		try:
+			db.session.commit()
+			flash("User update successfully!")
+			return render_template("update.html",form=form,name_to_update=name_to_update)
+		except :
+			flash("User update Error try again,.. !")
+			return render_template("update.html",form=form,name_to_update=name_to_update)
+	else:
+		return render_template("update.html",form=form,name_to_update=name_to_update)
 
 class NameForm(FlaskForm):
 	name = StringField("What your Name ", validators=[DataRequired()])
