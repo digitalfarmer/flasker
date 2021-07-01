@@ -29,6 +29,11 @@
 					{{our_user.name}}</a></td>
 					<td>{{our_user.email}}</td>
 					<td>{{our_user.favorite_color}}</td>
+					<td>
+						<a href="{{url_for('delete', id=our_user.id)}}" class="btn btn-danger">
+							Delete 
+						</a>
+						</td>
 				</tr>
 				{% endfor %}
 			</tbody>
@@ -71,7 +76,11 @@
 						{{our_user.name}}</a></td>
 					<td>{{our_user.email}}</td>
 					<td>{{our_user.favorite_color}}</td>
-					<td><button class="btn btn-warning">Edite</button></td>
+					<td>
+					<a href="{{url_for('delete', id=our_user.id)}}" class="btn btn-danger">
+						Delete 
+					</a>
+					</td>
 				</tr>
 				{% endfor %}
 			</tbody>
