@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import  Migrate
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import  date
 
 # create flask instance
 app = Flask(__name__)
@@ -23,6 +24,10 @@ app.config['SECRET_KEY']="lobotijo"
 #initial database
 db= SQLAlchemy(app)
 migrate = Migrate(app,db)
+
+@app.route('/date')
+def get_current_date():
+	return { "Date": date.today()}
 
 #create model
 class Users(db.Model):
