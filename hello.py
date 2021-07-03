@@ -1,8 +1,8 @@
 # author : lobotijo
 from flask import  Flask, render_template, flash, request
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
+from wtforms.validators import DataRequired, EqualTo, Length
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import  Migrate
@@ -75,7 +75,11 @@ class UserForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired()])
 	email = StringField("Email", validators=[DataRequired()])
 	favorite_color = StringField("Favorite Color")
+	password_hash=PasswordField("Password", validators=[DataRequired(), EqualTo('password_hash2', message='Password must be Match')])
+	password_hash2=PasswordField("Confirm Password")
 	submit = SubmitField("Submit")
+
+
 
 # updateuser
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
@@ -100,6 +104,12 @@ class NameForm(FlaskForm):
 	name = StringField("What your Name ", validators=[DataRequired()])
 	submit = SubmitField("Submit")
 
+# password form
+class PasswordForm(FlaskForm):
+	email = StringField("email ", validators=[DataRequired()])
+	password_hash = PasswordField("password ", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
 
 # def index():
 # 	return "<h1>Hello Flask</h1>"
@@ -112,13 +122,16 @@ def add_user():
 	if form.validate_on_submit():
 		user = Users.query.filter_by(email=form.email.data).first()
 		if user is None:
-			user = Users(name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data)
+			#hash 'context' : {'default_order_id' : self.order_id},
+			hash_pw= generate_password_hash(form.password_hash.data, "sha256")
+			user = Users(name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data, password_hash=hash_pw)
 			db.session.add(user);
 			db.session.commit()
 		name = form.name.data
 		form.name.data=''
 		form.email.data=''
 		form.favorite_color.data=''
+		form.password_hash.data=''
 		flash('User added successfully')
 	our_users = Users.query.order_by(Users.date_added)
 	return render_template('add_user.html', 
@@ -149,6 +162,35 @@ def page_not_found(e):
 @app.errorhandler(500)
 def page_not_found(e):
 	return render_template("500.html"), 500
+
+# create test_pw`
+@app.route('/test_pw', methods=['GET', 'POST'])
+def test_pw():
+	email= None
+	password=None
+	pw_to_check=None
+	passed=None,
+	form= PasswordForm()
+	# validate form
+	if form.validate_on_submit():
+		email= form.email.data
+		password= form.password_hash.data
+		#clear form
+		form.email.data = ''
+		form.password_hash.data = ''
+		#flash("Form Submit Successfully")
+		pw_to_check= Users.query.filter_by(email=email).first()
+
+		# check hash password
+		passed=check_password_hash(pw_to_check.password_hash, password)
+
+	return render_template("test_pw.html",
+	email=email,
+	password=password,
+	pw_to_check=pw_to_check,
+	passed=passed,
+	form=form)
+
 
 # create name page`
 @app.route('/name', methods=['GET', 'POST'])

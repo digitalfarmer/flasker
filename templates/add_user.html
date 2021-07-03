@@ -19,6 +19,7 @@
 					<td>Nama</td>
 					<td>Email</td>
 					<td>Favorite Color</td>
+					<td>Action</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -52,6 +53,12 @@
 					{{ form.email(class="form-control") }}
 					{{ form.favorite_color.label(class="form-label") }}
 					{{ form.favorite_color(class="form-control") }}
+					
+					{{ form.password_hash.label(class="form-label") }}
+					{{ form.password_hash(class="form-control") }}
+
+					{{ form.password_hash2.label(class="form-label") }}
+					{{ form.password_hash2(class="form-control") }}
 				</div>
 				{{ form.submit(class="btn btn-dark")   }}
 			</form>
