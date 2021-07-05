@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Article ,...</h1>
+ <br>
+ {% for post in posts %}
+ <li>
+	 {{post.title}}
+	 <p>{{post.content}}</p>
+	 <p>{{post.date_posted}}-{{post.author}}</p>
+</li>
+ </li>
+
+{% endfor %}
+{% endblock %}

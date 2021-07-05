@@ -64,6 +64,13 @@ def add_post():
 		#redirect to webpage
 	return render_template('add_post.html', form=form)
 
+# show the blogpost
+@app.route('/post')
+def post():
+	# grab all the posts from database
+	posts = Posts.query.order_by(Posts.date_posted)
+	return render_template('post.html', posts=posts)
+
 #route api
 @app.route('/date')
 def get_current_date():
