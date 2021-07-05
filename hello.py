@@ -10,6 +10,8 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import  date
 
+from wtforms.widgets.core import TextArea
+
 # create flask instance
 app = Flask(__name__)
 
@@ -25,6 +27,44 @@ app.config['SECRET_KEY']="lobotijo"
 db= SQLAlchemy(app)
 migrate = Migrate(app,db)
 
+# Create Blog post Model
+class Posts(db.Model):
+	id=db.Column(db.Integer, primary_key=True)
+	title=db.Column(db.String(255))
+	content=db.Column(db.Text)
+	author=db.Column(db.String(255))
+	date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+	slug=db.Column(db.String(255))
+
+#create a POSTS from 
+class PostsForm(FlaskForm):
+	title=StringField("Title", validators=[DataRequired()])
+	content=StringField("Content", validators=[DataRequired()], widget=TextArea())
+	author= StringField("Author", validators=[DataRequired()])
+	slug=StringField("Slug", validators=[DataRequired()])
+	submit=SubmitField("Submit")
+
+#add POST 
+@app.route('/add-post', methods=['POST', 'GET'])
+def add_post():
+	form=PostsForm()
+	
+	if form.validate_on_submit():
+		post = Posts(title=form.title.data,content=form.content.data,author=form.author.data,slug=form.slug.data)
+		form.title.data=''
+		form.content.data=''
+		form.author.data=''
+		form.slug.data=''
+
+		#add data to database
+		db.session.add(post)
+		db.session.commit()
+		# return a message
+		flash("Blog is created successfully")
+		#redirect to webpage
+	return render_template('add_post.html', form=form)
+
+#route api
 @app.route('/date')
 def get_current_date():
 	return { "Date": date.today()}
